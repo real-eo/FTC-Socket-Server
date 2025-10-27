@@ -6,7 +6,11 @@ Socket server written in Java to run on an FTC Robot along a client running on e
 `main.py` is meant to run on the external pc
 
 ## How?
-First, the java server sends the image data from the usb camera mounted on the robot to a python tcp client over a local wifi socket. Then a keras image recognition model does AI recognition on the image data before it echos the response from the recognition back to the java server.
+1. The java server sends the image data from the usb camera mounted on the robot to a python tcp client over a local wifi socket. 
+2. A keras image recognition model does AI recognition on the image data sent to the pc running the client
+3. The python client echos the response from the recognition back to the java server.
+
+**Note**
 The image data is sent bytewise and saved to a file, before it gets recompiled into the full image.
 Test data for the program is based on identprof (chefs, docotrs, engineers). 
 Final model uses images trained based off the powerplay game scoreing elements 
