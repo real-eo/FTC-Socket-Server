@@ -1,0 +1,9 @@
+{
+    "python.analysis.typeCheckingMode": "basic",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "libs/bridj-0.7.0.jar",
+        "libs/slf4j-api-1.7.2.jar",
+        "libs/webcam-capture-0.3.12.jar"
+    ]
+}

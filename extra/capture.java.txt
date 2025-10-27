@@ -1,0 +1,31 @@
+import java.awt.image.BufferedImage;
+//import java.io.File;
+//import java.io.IOException;
+import java.io.*;
+
+import javax.imageio.ImageIO;
+
+// Requires 3 libs: bridj-0.7.0.jar, slf4j-api-1.7.2.jar, webcam-capture-0.3.12.jar
+import com.github.sarxos.webcam.Webcam;
+
+/**
+ * Example of how to take single picture.
+ * 
+ * @author Bartosz Firyn (SarXos)
+ */
+public class capture {
+	public static void main(String[] args) throws IOException {
+
+		// Get default webcam and open it
+		Webcam webcam = Webcam.getDefault();
+		webcam.open();
+
+		// Get image
+		BufferedImage image = webcam.getImage();
+		System.out.println("[:] Image captured!");
+
+		// Save image to .png file
+		ImageIO.write(image, "PNG", new File("sources/img.png"));
+		System.out.println("[:] Image Saved!");
+	}
+}

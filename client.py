@@ -1,0 +1,70 @@
+# [§] Client
+import compileRequest
+import threading
+import socket
+import time
+
+# * This IP and PORT is the robot server's address
+host = "127.0.0.1"  # For debugging locally
+# host = "10.163.121.160"  # ? The IP used by the server
+port = 8800  # ? The port used by the server
+
+serverAddress = (host, port)  # The server's address
+
+def _finishRequest_():
+    return compileRequest.image()
+
+def connectClient(msg):	
+	global data
+	
+	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as clientSocket:
+		clientSocket.connect(serverAddress)
+		
+		clientSocket.sendall(msg)
+
+		if b"return" in msg:
+			sizeByte = clientSocket.recv(1024)
+
+			size = int(sizeByte.decode("utf-8"))
+
+			print(f"[§] Size: {size}")
+
+			clientSocket.sendall(b"receivedSize\n")
+
+			totalData = 0
+			dataRemaining = True
+			returnedRequest = ""
+
+			while (dataRemaining):
+				dataEncoded = clientSocket.recv(size)
+				data = dataEncoded.decode("utf-8")
+
+				totalData += len(data)
+				# print("Received data with size: {:>4}!{:>%}/{}".replace("%", str(len(str(size)) + 2)).format(len(data)), totalData, size)
+				print("[§] Received data with size: {:>4}!".format(len(data)))
+
+				returnedRequest += data
+				time.sleep(0.05)
+				clientSocket.sendall(f"{data}\n".encode("utf-8"))
+
+				if ("&" in data):
+					returnedRequest.replace("&", "")
+					print(f"[§] Received full request!")
+					dataRemaining = False
+			
+			with open("output/output.txt", "w") as outputFile:
+				outputFile.truncate(0)
+				outputFile.write(returnedRequest.replace("&", ""))
+
+			print("[§] Client closed!")
+				
+		else:
+			data = clientSocket.recv(1024)
+			
+			print(f"[§] Received: {data!r}")
+
+	if b"return" in msg:
+		return _finishRequest_()
+
+# connectClient(b'return.request:tfView\n')
+# connectClient(b"stop:0\n")

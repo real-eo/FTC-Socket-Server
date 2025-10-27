@@ -1,0 +1,33 @@
+import java.io.*;
+import java.net.*;
+// import java.util.*; 
+
+// import java.lang.Math;
+
+class client {
+    public static void main(String[] args) throws IOException {
+        // String host = "10.163.112.190"; // PC Server ipv4
+        String host = "127.0.0.1";
+        int port = 8008; // PC Server port
+
+        try (Socket echoSocket = new Socket(host, port)) {
+            PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+        
+            String packet = "server.start:0";
+
+            out.println(packet);
+
+            String returnedPacket = in.readLine();
+            
+            System.out.println("Echo: \"" + returnedPacket + "\"!");
+        } catch (UnknownHostException e) {
+            System.err.println("Couldn't resolve host: \"" + host + "\"!");
+            System.exit(1);
+        } catch (IOException e) {
+            System.err.println("Couldn't get I/O for connection: \"" +
+                host + "\"!");
+            System.exit(1);
+        } 
+    }
+}

@@ -1,0 +1,70 @@
+# Server
+import threading
+import client
+import socket
+import time
+import os
+
+def runCode(code, encoding="utf-8"):
+    print(f"[$] Running: \"{code.decode(encoding)}\"")
+    return code.decode(encoding)
+
+def executeCommand(command, encoding="utf-8"):
+    print(f"[$] Executing: \"{command.decode(encoding)}\"")
+    return f"os.system(\'{command.decode(encoding)}\')"
+
+def startClient(x):
+    img = client.connectClient(b'return.request:tfView\n')
+    print(f"Done: \"{img}\"!")
+    #! Add Google Vision API Command/ Script/ Method should be called here...
+    #! After getting recognition, send packet to Java server containing path
+    #! Then raise KeuboardInterrupt to stop the python server
+    return "raise KeyboardInterrupt"
+
+def stopServer(permission):
+    print("[$] Attempting to stop...")
+    if not int(permission):
+        print("[$] Stop Initialized!")
+        return "connection.sendall(b\"stopping!\")\nraise KeyboardInterrupt"
+    else:
+        print("[$] Permission Denied!")
+        return "0"
+
+requestDictionary = {
+    b"stop": stopServer,
+    b"execute": executeCommand,
+    b"run": runCode,
+    b"start": startClient
+}
+
+host = ""  # 10.163.112.190
+port = 8008  # The port used by the server
+serverAddress = (host, port)  # The server's address
+
+def createConnection(hostAddress):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as requestedSocket:
+        requestedSocket.bind(hostAddress)
+        requestedSocket.listen()
+        
+        return requestedSocket.accept()
+
+def listeningThread():
+    print(f"[$] Server started on port: \"{port}\"")
+    while True:
+        try:
+            connection, address = createConnection(serverAddress)
+
+            with connection:
+                print(f"[ ] Connected by {address}")
+                while True:
+                    data = connection.recv(1024)
+                    if not data:
+                        break
+                    elif b"server." in data:
+                        exec(requestDictionary[data[data.find(b".")+1:data.find(b":")]](data[data.find(b":")+1:]))
+                    connection.sendall(data + "\n")
+        except KeyboardInterrupt:
+            print("[$] Stopping Server!")
+            break
+
+threading.Thread(target=listeningThread, name="listeningThread-main").start()
