@@ -10,7 +10,7 @@ Socket server written in Java to run on an FTC Robot along a client running on e
 2. A keras image recognition model does AI recognition on the image data sent to the pc running the client
 3. The python client echos the response from the recognition back to the java server.
 
-**Note**
+#### Note
 The image data is sent bytewise and saved to a file, before it gets recompiled into the full image.
 Test data for the program is based on identprof (chefs, docotrs, engineers). 
 Final model uses images trained based off the powerplay game scoreing elements 
