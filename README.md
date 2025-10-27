@@ -13,4 +13,5 @@ Socket server written in Java to run on an FTC Robot along a client running on e
 ### Notes
 - The image data is sent bytewise and saved to a file, before it gets recompiled into the full image.
 - Test data for the program is based on identprof (chefs, docotrs, engineers). 
-- Final model uses images trained based off the powerplay game scoreing elements 
+- Final model uses images trained based off the centerstage game scoreing elements (pixels) 
+
